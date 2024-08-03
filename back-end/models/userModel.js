@@ -1,25 +1,40 @@
 import mongoose from "mongoose";
+const Schema = mongoose.Schema;
+import validator from "validator";
+const UserSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 8,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      validate: {
+        validator: (email) => validator.isEmail(email),
+        message: "Please provide a valid email",
+      },
+    },
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+    role: {
+      type: String,
+      required: true,
+      enum: ["user", "admin"],
+      default: "user",
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', UserSchema);
 
-export default User; // Use ES module export
+export default User;
