@@ -1,5 +1,5 @@
 import Drop from "../models/dropModel.js";
-import User from "../models/userModel.js";
+import User from '../models/userModel.js'; 
 import Class from "../models/classModel.js";
 
 export const createDropRequest = async (req, res) => {
