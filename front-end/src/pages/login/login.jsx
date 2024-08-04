@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import "./login.css";
 import { useNavigate } from "react-router-dom";
@@ -16,31 +15,30 @@ const Login = () => {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
-  const login =async (email,password)=>{
-    try{
-      if(!email || ! password){
+  const login = async (email, password) => {
+    try {
+      if (!email || !password) {
         toast.error("Please enter both email and password");
         return;
       }
-      const response = await axios.post("http://localhost:3030/api/login",{
-        email:email,
-        password:password
-      });
+      const response = await axios.post(
+        "http://localhost:3030/api/users/login",
+        {
+          email: email,
+          password: password,
+        }
+      );
       toast.success("Login successful");
       console.log(response);
       navigate("/home");
-    }
-    catch (error){
+    } catch (error) {
       toast.error("Error logging in");
       console.log("Error logging in", error);
     }
-  
-    
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
   };
 
   return (
@@ -67,8 +65,10 @@ const Login = () => {
             required
           />
         </div>
-        <button type="submit" className="login-button" 
-        onClick={() => login(email, password)}
+        <button
+          type="submit"
+          className="login-button"
+          onClick={() => login(email, password)}
         >
           Login
         </button>
