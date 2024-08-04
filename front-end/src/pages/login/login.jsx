@@ -1,44 +1,46 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 import axios from "axios";
+import {
+  fetchingUsers,
+  loadUsers,
+  errorOccured,
+} from "../../data-store/redux/userSlice/index.js";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-  const login = async (email, password) => {
+  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handlePasswordChange = (e) => setPassword(e.target.value);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       if (!email || !password) {
         toast.error("Please enter both email and password");
         return;
       }
-      const response = await axios.post(
+      dispatch(fetchingUsers());
+      const { data } = await axios.post(
         "http://localhost:3030/api/users/login",
         {
-          email: email,
-          password: password,
+          email,
+          password,
         }
       );
+      dispatch(loadUsers(data));
       toast.success("Login successful");
-      console.log(response);
       navigate("/home");
     } catch (error) {
+      dispatch(errorOccured(error?.message));
       toast.error("Error logging in");
-      console.log("Error logging in", error);
     }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
   };
 
   return (
@@ -65,11 +67,7 @@ const Login = () => {
             required
           />
         </div>
-        <button
-          type="submit"
-          className="login-button"
-          onClick={() => login(email, password)}
-        >
+        <button type="submit" className="login-button">
           Login
         </button>
         <p>
