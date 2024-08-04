@@ -1,0 +1,112 @@
+/* Reset some default browser styles */
+body,
+div,
+form,
+input,
+button,
+h2,
+p,
+label {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Styling for the register component */
+.register {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 100vh !important;
+  background-color: #f8f8f8 !important;
+}
+
+.register-form {
+  background-color: #fff !important;
+  padding: 40px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  width: 100% !important;
+  max-width: 400px !important;
+  text-align: center !important;
+}
+
+.register-form h2 {
+  margin-bottom: 10px !important;
+  font-size: 24px !important;
+  font-weight: bold !important;
+  color: #333 !important;
+}
+
+.register-form p {
+  margin-bottom: 20px !important;
+  color: #666 !important;
+}
+
+.google-signup {
+  display: block !important;
+  width: 100% !important;
+  padding: 10px !important;
+  margin-bottom: 20px !important;
+  font-size: 16px !important;
+  color: #fff !important;
+  background-color: #db4437 !important;
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+}
+
+.google-signup:hover {
+  background-color: #c23321 !important;
+}
+
+.form-group {
+  margin-bottom: 20px !important;
+  text-align: left !important;
+}
+
+.form-group label {
+  display: block !important;
+  margin-bottom: 5px !important;
+  font-size: 14px !important;
+  color: #333 !important;
+}
+
+.form-group input {
+  width: 100% !important;
+  padding: 10px !important;
+  font-size: 16px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 5px !important;
+}
+
+.create-account {
+  display: block !important;
+  width: 100% !important;
+  padding: 10px !important;
+  font-size: 16px !important;
+  color: #fff !important;
+  background-color: #007bff !important;
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+}
+
+.create-account:hover {
+  background-color: #0056b3 !important;
+}
+
+.register-form a {
+  color: #007bff !important;
+  text-decoration: none !important;
+}
+
+.register-form a:hover {
+  text-decoration: underline !important;
+}
+
+.register-form p:last-child {
+  margin-top: 20px !important;
+  font-size: 14px !important;
+  color: #666 !important;
+}
