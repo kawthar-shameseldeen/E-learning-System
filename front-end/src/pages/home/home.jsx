@@ -5,6 +5,11 @@ import "./home.css";
 import Navbar from "../../components/navbar/navbar.jsx";
 
 const Courses = () => {
-  return <div>Hello</div>;
+  return (
+    <div>
+      <Navbar />
+      Hello
+    </div>
+  );
 };
 export default Courses;
