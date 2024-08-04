@@ -1,4 +1,4 @@
-/* Reset some default browser styles */
+
 .navbar * {
   margin: 0 !important;
   padding: 0 !important;
@@ -6,7 +6,7 @@
   box-sizing: border-box;
 }
 
-/* Basic styling for the navbar */
+
 .navbar {
   display: flex !important;
   justify-content: space-between !important;
@@ -17,7 +17,7 @@
   font-family: Arial, sans-serif !important;
 }
 
-/* Styling for the logo */
+
 .navbar .logo a {
   text-decoration: none !important;
   font-size: 24px !important;
@@ -25,7 +25,6 @@
   color: #333 !important;
 }
 
-/* Styling for the nav links */
 .navbar .nav-links {
   display: flex !important;
   align-items: center !important;
@@ -46,7 +45,6 @@
   color: #555 !important;
 }
 
-/* Styling for the search input and buttons */
 .navbar .search-login-signup {
   display: flex !important;
   align-items: center !important;
