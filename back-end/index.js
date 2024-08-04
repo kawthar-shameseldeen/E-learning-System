@@ -1,36 +1,30 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import conn from './connection.js';
-import userRoutes from './routes/userRoutes.js';
-import classRoutes from './routes/classRoutes.js';
-import enrollmentRoutes from './routes/enrollmentRoutes.js';
-import fileRoutes from './routes/fileRoutes.js';
-import dropRoutes from './routes/dropRoutes.js';
-import { protect } from './utils/authMiddleware.js'; 
-
-dotenv.config(); 
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import conn from "./connection.js";
 
 const app = express();
+
+// Middleware
 app.use(express.json());
+app.use(cors()); // Enable CORS for all routes
 
+// Routes
+import userRoutes from "./routes/userRoutes.js";
+import classRoutes from "./routes/classRoutes.js";
+import enrollmentRoutes from "./routes/enrollmentRoutes.js";
+import fileRoutes from "./routes/fileRoutes.js";
+import dropRoutes from "./routes/dropRoutes.js";
+
+app.use("/api/users", userRoutes);
+app.use("/api/classes", classRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/files", fileRoutes);
+app.use("/api/drops", dropRoutes);
+
+// Start server
 const PORT = process.env.PORT || 3030;
-
-app.use('/api', userRoutes);
-app.use('/api', classRoutes);
-app.use('/api', enrollmentRoutes);
-app.use('/api', fileRoutes);
-app.use('/api', dropRoutes);
-
-async function startServer() {
-  try {
-    await conn();
-    app.listen(PORT, () => {
-      console.log(`Server listening on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error('Failed to connect to MongoDB', error);
-    process.exit(1);
-  }
-}
-
-startServer();
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  conn();
+});
