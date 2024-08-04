@@ -1,5 +1,5 @@
 import Class from "../models/classModel.js";
-import User from "../models/userModel.js";
+import User from '../models/userModel.js'; 
 
 export const createClass = async (req, res) => {
   const { title, description, instructor } = req.body;
