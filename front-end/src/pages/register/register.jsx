@@ -1,14 +1,18 @@
 
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./register.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  registerUser,
+  registerUserSuccess,
+  registerUserStart,
+  registerUserFail,
   usersSliceSelector,
 } from "../../data-store/redux/userSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -18,9 +22,18 @@ const Register = () => {
   const dispatch = useDispatch();
   const { loading, error, user } = useSelector(usersSliceSelector);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(registerUser({ name: username, email, password }));
+    dispatch(registerUserStart());
+    try {
+      const response = await axios.post(
+        "http://localhost:3030/api/users/register",
+        { name: username, email, password }
+      );
+      dispatch(registerUserSuccess(response.data));
+    } catch (error) {
+      dispatch(registerUserFail(error.response.data));
+    }
   };
 
   useEffect(() => {
