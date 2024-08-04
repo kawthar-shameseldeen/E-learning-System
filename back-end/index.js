@@ -5,11 +5,11 @@ import conn from "./connection.js";
 
 const app = express();
 
-// Middleware
-app.use(express.json());
-app.use(cors()); // Enable CORS for all routes
 
-// Routes
+app.use(express.json());
+app.use(cors()); 
+
+
 import userRoutes from "./routes/userRoutes.js";
 import classRoutes from "./routes/classRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
@@ -22,7 +22,7 @@ app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/api/drops", dropRoutes);
 
-// Start server
+
 const PORT = process.env.PORT || 3030;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
