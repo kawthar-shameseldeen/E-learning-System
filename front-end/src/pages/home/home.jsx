@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import "./home.css";
 import Navbar from "../../components/navbar/navbar.jsx";
 
-const Courses =()=>{
-    
-}
+const Courses = () => {
+  return <div>Hello</div>;
+};
+export default Courses;
