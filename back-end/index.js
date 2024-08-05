@@ -5,10 +5,8 @@ import conn from "./connection.js";
 
 const app = express();
 
-
 app.use(express.json());
-app.use(cors()); 
-
+app.use(cors());
 
 import userRoutes from "./routes/userRoutes.js";
 import classRoutes from "./routes/classRoutes.js";
@@ -16,12 +14,11 @@ import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import fileRoutes from "./routes/fileRoutes.js";
 import dropRoutes from "./routes/dropRoutes.js";
 
-app.use("/api/users", userRoutes);
-app.use("/api/classes", classRoutes);
-app.use("/api/enrollments", enrollmentRoutes);
-app.use("/api/files", fileRoutes);
-app.use("/api/drops", dropRoutes);
-
+app.use("/api", userRoutes);
+app.use("/api", classRoutes);
+app.use("/api", enrollmentRoutes);
+app.use("/api", fileRoutes);
+app.use("/api", dropRoutes);
 
 const PORT = process.env.PORT || 3030;
 app.listen(PORT, () => {

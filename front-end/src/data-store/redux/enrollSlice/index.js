@@ -1,3 +1,4 @@
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const enrollSlice = createSlice({
@@ -6,6 +7,7 @@ const enrollSlice = createSlice({
     enrollLoading: false,
     enrollSuccess: null,
     enrollError: null,
+    enrolledClasses: [],
   },
   reducers: {
     fetchingEnroll: (state) => {
@@ -20,10 +22,20 @@ const enrollSlice = createSlice({
       state.enrollError = action.payload;
       state.enrollLoading = false;
     },
+    setEnrolledClasses: (state, action) => {
+      state.enrolledClasses = action.payload;
+      state.enrollLoading = false;
+    },
   },
 });
 
-export const { fetchingEnroll, setEnrollSuccess, setEnrollError } =
-  enrollSlice.actions;
+export const {
+  fetchingEnroll,
+  setEnrollSuccess,
+  setEnrollError,
+  setEnrolledClasses,
+  fetchEnrolledClasses,
+  enrollInClass,
+} = enrollSlice.actions;
 export const enrollSelector = (state) => state.enrollments;
 export const enrollReducer = enrollSlice.reducer;

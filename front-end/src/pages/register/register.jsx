@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./register.css";
@@ -26,10 +24,11 @@ const Register = () => {
     e.preventDefault();
     dispatch(registerUserStart());
     try {
-      const response = await axios.post(
-        "http://localhost:3030/api/users/register",
-        { name: username, email, password }
-      );
+      const response = await axios.post("http://localhost:3030/api/register", {
+        name: username,
+        email,
+        password,
+      });
       dispatch(registerUserSuccess(response.data));
     } catch (error) {
       dispatch(registerUserFail(error.response.data));

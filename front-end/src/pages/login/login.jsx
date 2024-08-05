@@ -9,6 +9,7 @@ import {
   loadUsers,
   errorOccured,
 } from "../../data-store/redux/userSlice/index.js";
+import {jwtDecode} from "jwt-decode";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -28,13 +29,17 @@ const Login = () => {
       }
       dispatch(fetchingUsers());
       const { data } = await axios.post(
-        "http://localhost:3030/api/users/login",
+        "http://localhost:3030/api/login",
         {
           email,
           password,
         }
       );
       dispatch(loadUsers(data));
+      let token = data.token;
+      
+      
+      localStorage.setItem("token", token);
       toast.success("Login successful");
       navigate("/home");
     } catch (error) {

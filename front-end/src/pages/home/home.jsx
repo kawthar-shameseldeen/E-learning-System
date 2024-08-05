@@ -1,77 +1,84 @@
-import React, { useEffect } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchingClasses,
-  setClasses,
-  setError,
-  classSelector,
+  fetchingCourses,
+  setAvailableCourses,
+  coursesSelector,
+  removeCourse,
 } from "../../data-store/redux/classSlice";
 import {
-  enrollInClass,
-  enrollSelector,
   fetchingEnroll,
-  setEnrollSuccess,
   setEnrollError,
+  setEnrolledClasses,
+  enrollSelector,
 } from "../../data-store/redux/enrollSlice";
-import axios from "axios";
-import Navbar from "../../components/navbar/navbar.jsx";
-import { toast } from "react-toastify";
+import Navbar from "../../components/navbar/navbar";
 import {
   Card,
   CardContent,
   Typography,
   Container,
   Box,
+  CircularProgress,
   Button,
 } from "@mui/material";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import "./home.css";
+import { useEffect } from "react";
 
-const Courses = () => {
+const Home = () => {
+  const user = jwtDecode(localStorage.getItem("token"));
+  const id = user.id;
   const dispatch = useDispatch();
-  const { list: classes, loading, error } = useSelector(classSelector);
-  const { enrollLoading, enrollError, enrollSuccess } =
-    useSelector(enrollSelector);
+  const { availableCourses, coursesLoading, coursesError } =
+    useSelector(coursesSelector);
+  const { enrolledClasses } = useSelector(enrollSelector);
 
   useEffect(() => {
-    const fetchClasses = async () => {
-      dispatch(fetchingClasses());
+    const fetchAvailableCourses = async () => {
+      dispatch(fetchingCourses());
       try {
-        const response = await axios.get(
-          "http://localhost:3030/api/classes/classes"
-        );
-        dispatch(setClasses(response.data));
-        toast.success("Classes fetched successfully");
+        const response = await axios.get("http://localhost:3030/api/classes");
+        dispatch(setAvailableCourses(response.data));
       } catch (error) {
-        dispatch(setError("Classes not found"));
-        toast.error("Classes not found");
+        console.error("Failed to fetch courses", error);
       }
     };
-    fetchClasses();
+
+    fetchAvailableCourses();
   }, [dispatch]);
 
-  const handleEnroll = async (classId) => {
-    dispatch(fetchingEnroll());
+  const enrollInClass = async (classId) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3030/api/enrollments/enrollments",
-        { classId }
-      );
-      dispatch(setEnrollSuccess(response.data));
-      toast.success("Enrolled successfully");
+      await axios.post("http://localhost:3030/api/enrollments", {
+        student: id,
+        class: classId,
+      });
+      dispatch(removeCourse(classId));
+      fetchEnrolledClasses(id);
     } catch (error) {
-      dispatch(setEnrollError("Enrollment failed"));
-      toast.error("Enrollment failed");
+      console.error("Enrollment failed", error);
     }
   };
 
-  const colors = [
-    "#e3f2fd",
-    "#fce4ec",
-    "#f3e5f5",
-    "#e8f5e9",
-    "#fffde7",
-    "#e0f7fa",
-  ];
+  const fetchEnrolledClasses = async (id) => {
+    dispatch(fetchingEnroll());
+    try {
+      const response = await axios.get(
+        `http://localhost:3030/api/student/${id}`
+      );
+      dispatch(setEnrolledClasses(response.data));
+    } catch (error) {
+      dispatch(setEnrollError("Failed to fetch enrolled classes"));
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchEnrolledClasses(id);
+    }
+  }, [dispatch, id]);
 
   return (
     <div>
@@ -80,18 +87,17 @@ const Courses = () => {
         <Typography variant="h4" align="center" gutterBottom>
           Available Courses
         </Typography>
-        <Typography variant="h6" align="center" gutterBottom>
-          Enroll your Course
-        </Typography>
-        <Box display="flex" flexWrap="wrap" justifyContent="center" gap={2}>
-          {loading ? (
-            <p>Loading classes...</p>
-          ) : error ? (
-            <p>{error}</p>
-          ) : classes.length > 0 ? (
-            classes.map((classItem, index) => (
+        <Box display="flex" flexWrap="wrap" gap={2} justifyContent="center">
+          {coursesLoading ? (
+            <CircularProgress />
+          ) : coursesError ? (
+            <Typography variant="body1" color="error">
+              {coursesError}
+            </Typography>
+          ) : (
+            availableCourses.map((course) => (
               <Card
-                key={classItem._id}
+                key={course._id}
                 className="class-item"
                 sx={{
                   width: "300px",
@@ -100,42 +106,29 @@ const Courses = () => {
                   flexDirection: "column",
                   justifyContent: "space-between",
                   marginBottom: "20px",
-                  backgroundColor: colors[index % colors.length],
-                  borderRadius: "10px",
                 }}
               >
-                <CardContent sx={{ flexGrow: 1 }}>
+                <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
-                    {classItem.title}
+                    {course.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {classItem.description}
+                    {course.description}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Instructor: {classItem.instructor.name}
+                    Instructor:{" "}
+                    {course.instructor ? course.instructor.name : "N/A"}
                   </Typography>
-                </CardContent>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    padding: "8px",
-                  }}
-                >
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => handleEnroll(classItem._id)}
-                    disabled={enrollLoading}
-                    sx={{ alignSelf: "flex-end" }}
+                    onClick={() => enrollInClass(course._id)}
                   >
                     Enroll
                   </Button>
-                </Box>
+                </CardContent>
               </Card>
             ))
-          ) : (
-            <p>No classes found</p>
           )}
         </Box>
       </Container>
@@ -143,4 +136,4 @@ const Courses = () => {
   );
 };
 
-export default Courses;
+export default Home;

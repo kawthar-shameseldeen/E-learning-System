@@ -1,0 +1,7 @@
+.class-item {
+  transition: transform 0.2s;
+}
+
+.class-item:hover {
+  transform: scale(1.05);
+}

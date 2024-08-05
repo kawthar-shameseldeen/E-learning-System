@@ -1,58 +1,139 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchingEnrolledClasses,
+  fetchingEnroll,
+  setEnrollError,
   setEnrolledClasses,
-  setEnrolledClassesError,
-  enrolledClassesSelector,
-} from "../../data-store/redux/enrolledClassesSlice";
-import axios from "axios";
+  enrollSelector,
+} from "../../data-store/redux/enrollSlice";
+import {
+  fetchingDropRequests,
+  setDropRequests,
+  droppingCourse,
+  dropCourseSuccess,
+  dropCourseError,
+  clearDropState,
+  dropSelector,
+} from "../../data-store/redux/dropSlice";
 import Navbar from "../../components/navbar/navbar.jsx";
-import { toast } from "react-toastify";
-import { Card, CardContent, Typography, Container, Box } from "@mui/material";
-import "./home.css";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Container,
+  Box,
+  CircularProgress,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import "./enrolled.css";
 
-const EnrolledCourses = () => {
+const EnrolledClasses = () => {
+  const user = jwtDecode(localStorage.getItem("token"));
+  const id = user.id;
   const dispatch = useDispatch();
-  const {
-    list: enrolledClasses,
-    loading,
-    error,
-  } = useSelector(enrolledClassesSelector);
+  const { enrolledClasses, enrollLoading, enrollError } =
+    useSelector(enrollSelector);
+  const { dropLoading, dropError, dropSuccess, dropRequests } =
+    useSelector(dropSelector);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [dropReason, setDropReason] = useState("");
 
   useEffect(() => {
-    const fetchEnrolledClasses = async () => {
-      dispatch(fetchingEnrolledClasses());
+    const fetchEnrolledClasses = async (id) => {
+      dispatch(fetchingEnroll());
       try {
         const response = await axios.get(
-          "http://localhost:3030/api/enrollments/user"
+          `http://localhost:3030/api/student/${id}`
         );
         dispatch(setEnrolledClasses(response.data));
-        toast.success("Enrolled classes fetched successfully");
       } catch (error) {
-        dispatch(setEnrolledClassesError("Failed to fetch enrolled classes"));
-        toast.error("Failed to fetch enrolled classes");
+        dispatch(setEnrollError("Failed to fetch enrolled classes"));
       }
     };
-    fetchEnrolledClasses();
-  }, [dispatch]);
+
+    const fetchDropRequests = async (id) => {
+      dispatch(fetchingDropRequests());
+      try {
+        const response = await axios.get(
+          `http://localhost:3030/api/drops/student/${id}`
+        );
+        dispatch(setDropRequests(response.data));
+      } catch (error) {
+        dispatch(setDropRequests([]));
+      }
+    };
+
+    if (id) {
+      fetchEnrolledClasses(id);
+      fetchDropRequests(id);
+    }
+  }, [dispatch, id]);
+
+  const handleDropCourse = async () => {
+    if (selectedClass && dropReason) {
+      dispatch(droppingCourse());
+      try {
+        const response = await axios.post("http://localhost:3030/api/drops", {
+          student: id,
+          class: selectedClass._id,
+          reason: dropReason,
+        });
+        dispatch(dropCourseSuccess(response.data));
+      } catch (error) {
+        dispatch(dropCourseError("Failed to request course drop"));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (dropSuccess) {
+      dispatch(clearDropState());
+      setOpenDialog(false);
+      setDropReason("");
+      setSelectedClass(null);
+      const fetchEnrolledClasses = async (id) => {
+        dispatch(fetchingEnroll());
+        try {
+          const response = await axios.get(
+            `http://localhost:3030/api/student/${id}`
+          );
+          dispatch(setEnrolledClasses(response.data));
+        } catch (error) {
+          dispatch(setEnrollError("Failed to fetch enrolled classes"));
+        }
+      };
+      fetchEnrolledClasses(id);
+    }
+  }, [dropSuccess, dispatch, id]);
 
   return (
     <div>
       <Navbar />
       <Container sx={{ marginTop: 8 }}>
         <Typography variant="h4" align="center" gutterBottom>
-          Enrolled Courses
+          My Enrolled Classes
         </Typography>
-        <Box display="flex" flexWrap="wrap" justifyContent="center" gap={2}>
-          {loading ? (
-            <p>Loading enrolled classes...</p>
-          ) : error ? (
-            <p>{error}</p>
+        <Box display="flex" flexWrap="wrap" gap={2} justifyContent="center">
+          {enrollLoading ? (
+            <CircularProgress />
+          ) : enrollError ? (
+            <Typography variant="body1" color="error">
+              {enrollError}
+            </Typography>
           ) : enrolledClasses.length > 0 ? (
-            enrolledClasses.map((classItem) => (
+            enrolledClasses.map((enrollment) => (
               <Card
-                key={classItem._id}
+                key={enrollment._id}
                 className="class-item"
                 sx={{
                   width: "300px",
@@ -61,30 +142,71 @@ const EnrolledCourses = () => {
                   flexDirection: "column",
                   justifyContent: "space-between",
                   marginBottom: "20px",
-                  backgroundColor: "#f0f0f0",
-                  borderRadius: "10px",
                 }}
               >
-                <CardContent sx={{ flexGrow: 1 }}>
+                <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
-                    {classItem.title}
+                    {enrollment.class.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {classItem.description}
+                    {enrollment.class.description}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Instructor: {classItem.instructor.name}
+                    Instructor:{" "}
+                    {enrollment.class.instructor
+                      ? enrollment.class.instructor.name
+                      : "N/A"}
                   </Typography>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => {
+                      setSelectedClass(enrollment.class);
+                      setOpenDialog(true);
+                    }}
+                  >
+                    Request Drop
+                  </Button>
                 </CardContent>
               </Card>
             ))
           ) : (
-            <p>No enrolled classes found</p>
+            <Typography variant="body1">No enrolled classes found</Typography>
           )}
         </Box>
       </Container>
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Request Drop Course</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please provide a reason for requesting to drop this course.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Reason"
+            type="text"
+            fullWidth
+            value={dropReason}
+            onChange={(e) => setDropReason(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDropCourse}
+            color="secondary"
+            disabled={dropLoading}
+          >
+            {dropLoading ? "Requesting..." : "Request Drop"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
 
-export default EnrolledCourses;
+export default EnrolledClasses;

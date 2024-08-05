@@ -2,7 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { usersReducer } from "./userSlice";
 import { classReducer } from "./classSlice";
 import { enrollReducer } from "./enrollSlice";
-import { enrolledClassesReducer } from "./enrolledSlice";
+import { dropReducer } from "./dropSlice";
+
 import logger from "redux-logger";
 
 const store = configureStore({
@@ -10,7 +11,7 @@ const store = configureStore({
     users: usersReducer,
     classes: classReducer,
     enrollments: enrollReducer,
-    enrollledClasses: enrolledClassesReducer,
+    drops: dropReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });

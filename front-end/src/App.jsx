@@ -10,6 +10,7 @@ import store from "./data-store/redux/store";
 import Register from "./pages/register/register.jsx";
 import Login from "./pages/login/login.jsx";
 import Courses from "./pages/home/home.jsx";
+import EnrolledCourses from "./pages/enrolledClasses/enrolled.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={<Courses />} />
+      <Route path="/myCourses" element={<EnrolledCourses />} />
     </>
   )
 );
