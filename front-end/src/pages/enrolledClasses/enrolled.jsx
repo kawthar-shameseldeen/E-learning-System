@@ -63,6 +63,7 @@ const EnrolledClasses = () => {
 
     const fetchDropRequests = async (id) => {
       dispatch(fetchingDropRequests());
+      
       try {
         const response = await axios.get(
           `http://localhost:3030/api/drops/student/${id}`
