@@ -5,6 +5,7 @@ import {
   getEnrollmentById,
   updateEnrollment,
   deleteEnrollment,
+  getEnrollmentsByStudentId,
 } from "../controllers/enrollmentController.js";
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.get("/enrollments", getEnrollments);
 router.get("/enrollments/:id", getEnrollmentById);
 router.put("/enrollments/:id", updateEnrollment);
 router.delete("/enrollments/:id", deleteEnrollment);
+router.get("/student/:studentId", getEnrollmentsByStudentId);
 
 export default router;
