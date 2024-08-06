@@ -1,0 +1,63 @@
+.class-item {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.class-item:nth-child(1) {
+  background-color: #e0f7fa; /* Light blue */
+}
+
+.class-item:nth-child(2) {
+  background-color: #ffebee; /* Light red */
+}
+
+.class-item:nth-child(3) {
+  background-color: #e8f5e9; /* Light green */
+}
+
+.class-item:nth-child(4) {
+  background-color: #fffde7; /* Light yellow */
+}
+
+.class-item:nth-child(5) {
+  background-color: #e0f7fa; /* Light blue */
+}
+
+.class-item:nth-child(6) {
+  background-color: #ffebee; /* Light red */
+}
+
+.class-item:nth-child(7) {
+  background-color: #e8f5e9; /* Light green */
+}
+
+.class-item:nth-child(8) {
+  background-color: #fffde7; /* Light yellow */
+}
+
+.class-item:hover {
+  transform: scale(1.05);
+}
+
+.class-item .MuiCardContent-root {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.class-item .MuiTypography-h5 {
+  font-weight: bold;
+  color: #333;
+}
+
+.class-item .MuiTypography-body2 {
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.class-item .MuiButton-root {
+  align-self: flex-end;
+  margin-top: auto;
+}

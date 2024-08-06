@@ -1,0 +1,89 @@
+
+.navbar * {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+  box-sizing: border-box;
+}
+
+
+.navbar {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 10px 20px !important;
+  background-color: #f8f8f8 !important;
+  border-bottom: 1px solid #ddd !important;
+  font-family: Arial, sans-serif !important;
+}
+
+
+.navbar .logo a {
+  text-decoration: none !important;
+  font-size: 24px !important;
+  font-weight: bold !important;
+  color: #333 !important;
+}
+
+.navbar .nav-links {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.navbar .nav-links li {
+  margin-right: 20px !important;
+}
+
+.navbar .nav-links a {
+  text-decoration: none !important;
+  color: #333 !important;
+  font-size: 18px !important;
+  transition: color 0.3s !important;
+}
+
+.navbar .nav-links a:hover {
+  color: #555 !important;
+}
+
+.navbar .search-login-signup {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.navbar .search-login-signup .search-input {
+  padding: 5px 10px !important;
+  font-size: 16px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 5px !important;
+  margin-right: 10px !important;
+}
+
+.navbar .search-login-signup .login-btn,
+.navbar .search-login-signup .signup-btn {
+  text-decoration: none !important;
+  padding: 10px 20px !important;
+  font-size: 16px !important;
+  border-radius: 5px !important;
+  transition: background-color 0.3s, color 0.3s !important;
+}
+
+.navbar .search-login-signup .login-btn {
+  color: #333 !important;
+  background-color: transparent !important;
+  border: 1px solid #333 !important;
+  margin-right: 10px !important;
+}
+
+.navbar .search-login-signup .login-btn:hover {
+  background-color: #333 !important;
+  color: #fff !important;
+}
+
+.navbar .search-login-signup .signup-btn {
+  color: #fff !important;
+  background-color: #333 !important;
+}
+
+.navbar .search-login-signup .signup-btn:hover {
+  background-color: #555 !important;
+}
