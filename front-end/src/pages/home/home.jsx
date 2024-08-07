@@ -1,4 +1,3 @@
-
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchingCourses,
@@ -23,12 +22,13 @@ import {
   Button,
 } from "@mui/material";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; 
 import "./home.css";
 import { useEffect } from "react";
 
 const Home = () => {
-  const user = jwtDecode(localStorage.getItem("token"));
+  const token = localStorage.getItem("token");
+  const user = jwtDecode(token);
   const id = user.id;
   const dispatch = useDispatch();
   const { availableCourses, coursesLoading, coursesError } =
@@ -51,10 +51,18 @@ const Home = () => {
 
   const enrollInClass = async (classId) => {
     try {
-      await axios.post("http://localhost:3030/api/enrollments", {
-        student: id,
-        class: classId,
-      });
+      await axios.post(
+        "http://localhost:3030/api/enrollments",
+        {
+          student: id,
+          class: classId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       dispatch(removeCourse(classId));
       fetchEnrolledClasses(id);
     } catch (error) {
@@ -62,11 +70,16 @@ const Home = () => {
     }
   };
 
-  const fetchEnrolledClasses = async (id) => {
+  const fetchEnrolledClasses = async (studentId) => {
     dispatch(fetchingEnroll());
     try {
       const response = await axios.get(
-        `http://localhost:3030/api/student/${id}`
+        `http://localhost:3030/api/student/${studentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       dispatch(setEnrolledClasses(response.data));
     } catch (error) {

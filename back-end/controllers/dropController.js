@@ -1,5 +1,5 @@
 import Drop from "../models/dropModel.js";
-import User from '../models/userModel.js'; 
+import User from "../models/userModel.js";
 import Class from "../models/classModel.js";
 
 export const createDropRequest = async (req, res) => {
@@ -23,12 +23,10 @@ export const createDropRequest = async (req, res) => {
     });
 
     await newDropRequest.save();
-    res
-      .status(201)
-      .json({
-        message: "Drop request created successfully",
-        drop: newDropRequest,
-      });
+    res.status(201).json({
+      message: "Drop request created successfully",
+      drop: newDropRequest,
+    });
   } catch (error) {
     console.error("Error creating drop request:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -84,12 +82,10 @@ export const updateDropRequest = async (req, res) => {
     if (!updatedDropRequest) {
       return res.status(404).json({ message: "Drop request not found" });
     }
-    res
-      .status(200)
-      .json({
-        message: "Drop request updated successfully",
-        drop: updatedDropRequest,
-      });
+    res.status(200).json({
+      message: "Drop request updated successfully",
+      drop: updatedDropRequest,
+    });
   } catch (error) {
     console.error("Error updating drop request:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -107,6 +103,34 @@ export const deleteDropRequest = async (req, res) => {
     res.status(200).json({ message: "Drop request deleted successfully" });
   } catch (error) {
     console.error("Error deleting drop request:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+////////////////////
+export const approveDropRequest = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updatedRequest = await Drop.findByIdAndUpdate(
+      id,
+      { status: "approved" },
+      { new: true }
+    );
+    res.status(200).json(updatedRequest);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const rejectDropRequest = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updatedRequest = await Drop.findByIdAndUpdate(
+      id,
+      { status: "rejected" },
+      { new: true }
+    );
+    res.status(200).json(updatedRequest);
+  } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
