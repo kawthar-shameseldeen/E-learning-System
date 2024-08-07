@@ -16,7 +16,8 @@
   "author": "MIT",
   "license": "MIT",
   "dependencies": {
-    "electron": "^31.3.1"
+    "electron": "^31.3.1",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

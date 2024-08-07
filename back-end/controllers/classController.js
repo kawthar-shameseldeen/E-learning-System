@@ -1,5 +1,5 @@
 import Class from "../models/classModel.js";
-import User from '../models/userModel.js'; 
+import User from "../models/userModel.js";
 
 export const createClass = async (req, res) => {
   const { title, description, instructor } = req.body;
@@ -92,6 +92,16 @@ export const deleteClass = async (req, res) => {
     res.status(200).json({ message: "Class deleted successfully" });
   } catch (error) {
     console.error("Error deleting class:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const getClassesByInstructorId = async (req, res) => {
+  try {
+    const classes = await Class.find({ instructor: req.params.id });
+    res.status(200).json(classes);
+  } catch (error) {
+    console.error("Error fetching classes by instructor ID:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

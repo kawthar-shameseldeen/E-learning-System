@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addCourse,
@@ -11,7 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './admin.css';
 import Navbar from '../../components/navbar/navbar';
-
+import { useState } from 'react';
 const AdminPage = () => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector(coursesSelector);
@@ -54,6 +54,12 @@ const AdminPage = () => {
       dispatch(addCourse(response.data));
       setTitle('');
       setDescription('');
+
+   
+      const classIds = JSON.parse(localStorage.getItem('classIds')) || [];
+      classIds.push(response.data._id);
+      localStorage.setItem('classIds', JSON.stringify(classIds));
+
       toast.success('Course added successfully');
     } catch (error) {
       dispatch(setCoursesError('Failed to add course'));

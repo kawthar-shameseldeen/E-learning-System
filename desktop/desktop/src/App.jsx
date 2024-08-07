@@ -44,6 +44,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AdminPage from '././pages/admin/admin.jsx';
 import DropNotifications from './pages/drop/drop.jsx';
+import Courses from './pages/myCourses/myCourses.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -51,6 +52,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<Login />} />
       <Route path="/home" element={<AdminPage />} />
       <Route path="/drop" element={<DropNotifications />} />
+      <Route path="/courses" element={<Courses />} />
     </>
   )
 );

@@ -15,6 +15,12 @@ import {
   clearDropState,
   dropSelector,
 } from "../../data-store/redux/dropSlice";
+import {
+  setFiles,
+  setFilesLoading,
+  setFilesError,
+  filesSelector,
+} from "../../data-store/redux/fileSlice";
 import Navbar from "../../components/navbar/navbar.jsx";
 import {
   Card,
@@ -30,6 +36,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Link,
 } from "@mui/material";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -43,6 +50,11 @@ const EnrolledClasses = () => {
     useSelector(enrollSelector);
   const { dropLoading, dropError, dropSuccess, dropRequests } =
     useSelector(dropSelector);
+  const {
+    files,
+    loading: filesLoading,
+    error: filesError,
+  } = useSelector(filesSelector);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
@@ -79,6 +91,26 @@ const EnrolledClasses = () => {
       fetchDropRequests(id);
     }
   }, [dispatch, id]);
+
+  const fetchFiles = async (classId) => {
+    dispatch(setFilesLoading(true));
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(
+        `http://localhost:3030/api/files/class/${classId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      dispatch(setFiles({ classId, files: response.data }));
+    } catch (error) {
+      dispatch(setFilesError(error.response.data));
+    } finally {
+      dispatch(setFilesLoading(false));
+    }
+  };
 
   const handleDropCourse = async () => {
     if (selectedClass && dropReason) {
@@ -160,6 +192,13 @@ const EnrolledClasses = () => {
                   </Typography>
                   <Button
                     variant="contained"
+                    color="primary"
+                    onClick={() => fetchFiles(enrollment.class._id)}
+                  >
+                    View Files
+                  </Button>
+                  <Button
+                    variant="contained"
                     color="secondary"
                     onClick={() => {
                       setSelectedClass(enrollment.class);
@@ -168,6 +207,23 @@ const EnrolledClasses = () => {
                   >
                     Request Drop
                   </Button>
+                  {files[enrollment.class._id] &&
+                    files[enrollment.class._id].length > 0 && (
+                      <Box mt={2}>
+                        <Typography variant="body2">Files:</Typography>
+                        {files[enrollment.class._id].map((file) => (
+                          <Link
+                            key={file._id}
+                            href={`http://localhost:3030/${file.path}`}
+                            target="_blank"
+                            rel="noopener"
+                            download
+                          >
+                            {file.filename}
+                          </Link>
+                        ))}
+                      </Box>
+                    )}
                 </CardContent>
               </Card>
             ))
